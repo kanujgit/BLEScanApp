@@ -65,11 +65,11 @@ class BluetoothScanManager(
         }
     }
 
-    private fun executeBeforeScanActions() {
-        executeListOfFunctions(beforeScanActions)
-    }
+     fun executeBeforeScanActions() {
+         executeListOfFunctions(beforeScanActions)
+     }
 
-    private fun executeAfterScanActions() {
+    fun executeAfterScanActions() {
         executeListOfFunctions(afterScanActions)
     }
 

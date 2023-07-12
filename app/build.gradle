@@ -48,6 +48,7 @@ dependencies {
     //timber for debug
     implementation 'com.jakewharton.timber:timber:5.0.1'
     implementation 'com.google.android.material:material:1.9.0'
+    testImplementation 'org.mockito:mockito-core:3.12.4'
 
 
 }
