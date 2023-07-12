@@ -22,7 +22,13 @@ class BluetoothDeviceAdapter(private val devices: List<BluetoothDevices>) :
     @SuppressLint("MissingPermission")
     override fun onBindViewHolder(holder: BluetoothDeviceAdapter.ViewHolder, position: Int) {
         val device = devices[position]
-        holder.deviceName.text = device.name
+        holder.deviceName.text = buildString {
+        append(device.name)
+        append(" : ")
+        append(device.address)
+        append(" : ")
+        append(device.rssi)
+    }
     }
 
     override fun getItemCount(): Int {

@@ -111,9 +111,15 @@ class MainActivity : AppCompatActivity() {
         binding.btnStartScan.setOnClickListener {
             Timber.i("onClick event")
 
-            // Checks if the required permissions are granted and starts the scan if so, otherwise it requests them
-            // permissionManager checkRequestAndDispatch BLE_PERMISSION_REQUEST_CODEi
-            if (!permissionsCheck) bleScanManager.scanBleDevices() else requestPermissions()
+
+            val mBluetoothAdapter = btManager.adapter
+            if (mBluetoothAdapter == null) {
+                showToast("Device does not supported Bluetooth")
+            } else if (!mBluetoothAdapter.isEnabled) {
+                showToast("Bluetooth is not enabled :)")
+            } else {
+                if (!permissionsCheck) bleScanManager.scanBleDevices() else requestPermissions()
+            }
         }
     }
 
