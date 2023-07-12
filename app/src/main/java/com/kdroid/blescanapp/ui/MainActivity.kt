@@ -90,7 +90,8 @@ class MainActivity : AppCompatActivity() {
                 foundDevices.add(device)
                 val sortedUniqueDevices =
                     foundDevices.distinctBy { it.address }.sortedByDescending { it.rssi }
-                Timber.d(" Found device: $device and $sortedUniqueDevices")
+
+                Timber.d(" Found device: $device and $foundDevices")
 
                 bleAdapter.notifyItemInserted(sortedUniqueDevices.size - 1)
             })
@@ -192,15 +193,11 @@ class MainActivity : AppCompatActivity() {
     companion object {
         private const val PERMISSION_REQUEST_CODE = 1
 
-        private val permissions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            arrayOf(
-                BLUETOOTH_SCAN, ACCESS_COARSE_LOCATION, ACCESS_FINE_LOCATION, BLUETOOTH_CONNECT
-            )
-        } else {
-            arrayOf(
-                BLUETOOTH, ACCESS_COARSE_LOCATION, ACCESS_FINE_LOCATION, BLUETOOTH_ADMIN
-            )
-        }
+        private val permissions = arrayOf(
+            BLUETOOTH, ACCESS_COARSE_LOCATION, ACCESS_FINE_LOCATION, BLUETOOTH_ADMIN
+        ).takeIf { Build.VERSION.SDK_INT < Build.VERSION_CODES.S } ?: arrayOf(
+            BLUETOOTH_SCAN, ACCESS_COARSE_LOCATION, ACCESS_FINE_LOCATION, BLUETOOTH_CONNECT
+        )
 
     }
 }

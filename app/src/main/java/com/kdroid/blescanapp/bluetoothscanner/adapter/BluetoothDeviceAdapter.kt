@@ -8,6 +8,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.kdroid.blescanapp.R
 import com.kdroid.blescanapp.bluetoothscanner.data.BluetoothDevices
+import timber.log.Timber
 
 class BluetoothDeviceAdapter(private val devices: List<BluetoothDevices>) :
     RecyclerView.Adapter<BluetoothDeviceAdapter.ViewHolder>() {
@@ -23,12 +24,12 @@ class BluetoothDeviceAdapter(private val devices: List<BluetoothDevices>) :
     override fun onBindViewHolder(holder: BluetoothDeviceAdapter.ViewHolder, position: Int) {
         val device = devices[position]
         holder.deviceName.text = buildString {
-        append(device.name)
-        append(" : ")
-        append(device.address)
-        append(" : ")
-        append(device.rssi)
-    }
+            append(device.name)
+            append(" : ")
+            append(device.address)
+            append(" : ")
+            append(device.rssi)
+        }
     }
 
     override fun getItemCount(): Int {

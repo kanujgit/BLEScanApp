@@ -37,7 +37,9 @@ class BluetoothScanManager(
 
     @SuppressLint("MissingPermission")
     fun scanBleDevices() {
-
+        if (bleScanner == null) {
+            return
+        }
         fun stopScan() {
             Timber.d("scan stop")
             scanning = false
@@ -59,7 +61,7 @@ class BluetoothScanManager(
             // starts scanning
             Timber.d("scan start")
             scanning = true
-            bleScanner.startScan(scanFilter,scanSettings,scanCallback)
+            bleScanner.startScan(scanFilter, scanSettings, scanCallback)
         }
     }
 
