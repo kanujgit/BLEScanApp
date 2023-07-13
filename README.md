@@ -3,7 +3,6 @@
 This is a simple BLE scanner for Android.
 
 
+https://github.com/kanujgit/BLEScanApp/assets/24695286/4f410eae-82b2-4963-a9e6-8b1663cd71d1
 
-
-https://github.com/kanujgit/BLEScanApp/assets/24695286/f9ada84f-bee0-4970-b783-d9b67dae60ee
 
