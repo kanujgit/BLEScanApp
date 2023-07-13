@@ -23,7 +23,9 @@ import com.kdroid.blescanapp.bluetoothscanner.callbacks.BluetoothScannerCallback
 import com.kdroid.blescanapp.bluetoothscanner.data.BluetoothDevices
 import com.kdroid.blescanapp.bluetoothscanner.manager.BluetoothScanManager
 import com.kdroid.blescanapp.databinding.ActivityMainBinding
+import com.kdroid.blescanapp.utils.LinearLayoutManagerWrapper
 import timber.log.Timber
+import java.util.concurrent.ConcurrentHashMap
 
 
 class MainActivity : AppCompatActivity() {
@@ -36,8 +38,12 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var foundDevices: MutableList<BluetoothDevices>
 
-    private var permissionsCheck = false
+    val sortedBleDevices = mutableListOf<BluetoothDevices>()
 
+    // Create a thread-safe set to track unique addresses
+    val uniqueAddresses = ConcurrentHashMap<String, Int>()
+
+    private var permissionsCheck = false
 
     @SuppressLint("MissingPermission")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,7 +61,7 @@ class MainActivity : AppCompatActivity() {
         val bleAdapter = BluetoothDeviceAdapter(foundDevices)
         binding.recBleDevice.apply {
             adapter = bleAdapter
-            layoutManager = LinearLayoutManager(context)
+            layoutManager = LinearLayoutManagerWrapper(context, LinearLayoutManager.VERTICAL, false)
         }
 
         // BleManager creation
@@ -84,16 +90,21 @@ class MainActivity : AppCompatActivity() {
 
                 val device =
                     BluetoothDevices(address = address.toString(), name = name, rssi = rssi)
+                sortedBleDevices.add(device)
 
-
-                //sorting the list based on the RSSI
-                foundDevices.add(device)
-                val sortedUniqueDevices =
-                    foundDevices.distinctBy { it.address }.sortedByDescending { it.rssi }
-
-                Timber.d(" Found device: $device and $foundDevices")
-
-                bleAdapter.notifyItemInserted(sortedUniqueDevices.size - 1)
+                // Use parallel streams for concurrent processing
+                sortedBleDevices.parallelStream().forEach { device ->
+                    val isUniqueAddress = uniqueAddresses.putIfAbsent(device.address, 1) == null
+                    if (isUniqueAddress) {
+                        foundDevices.add(device)
+                    }
+                }
+                // Sort the list based on the RSSI
+                foundDevices.sortByDescending { it.rssi }
+                foundDevices.forEachIndexed { index, device ->
+                    Timber.d("Found device at index $index: $device")
+                    bleAdapter.notifyItemInserted(index)
+                }
             })
         )
 
